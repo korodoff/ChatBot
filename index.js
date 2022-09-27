@@ -1,9 +1,14 @@
-// const theater = require("./api/Route/theater")
-// const tickets = require("./api/Route/tickets")
-import theater from "./api/Route/theater.js"
-import tickets from "./api/Route/tickets.js"
+
 import express from "express"
+import dotenv from "dotenv"
 import mongoose from "mongoose";
+import authRoute from "./api/routes/auth.js"
+import hotelRoute from "./api/routes/hotel.js"
+import userRoute from "./api/routes/user.js"
+import roomRoute from "./api/routes/room.js"
+
+
+dotenv.config()
 //create App
 const app = express();
 
@@ -24,10 +29,23 @@ mongoose.connection.on("disconnected", () => {
 
 app.use(express.json())
 
-// Routes
-app.use("/api/theater", theater);
-app.use("/api/tickets", tickets);
+// middleWare
+app.use("/api/auth", authRoute)
+app.use("/api/hotel", hotelRoute)
+app.use("/api/room", roomRoute)
+app.use("/api/user", userRoute)
 
+
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong!";
+  return res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
+  });
+});
 
 app.listen(8800, () => {
   connect();
