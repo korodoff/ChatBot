@@ -1,10 +1,10 @@
 import express from "express";
+import { login, register } from "../controllers/auths.js";
 
 const router = express.Router();
 
-router.get("/",(req, res)=>{
-    res.send("working")
-})
+router.post("/register",register);
+router.post("/login",login);
 
 
 
